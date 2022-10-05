@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import glob
 import os
 import json
+import string 
 
 def xml_to_yolo_bbox(bbox, w, h):
     # xmin, ymin, xmax, ymax
@@ -64,11 +65,30 @@ def convers_voc2yolo(input_dir, output_dir, image_dir, classes):
     with open('classes.txt', 'w', encoding='utf8') as f:
         f.write(json.dumps(classes))
 
+def split(dataset_dir, train_ratio=0.85):
+    img_list = os.listdir(os.path.join(dataset_dir, "images"))
+    os.makedirs(os.path.join(dataset_dir, "images", "train"), exist_ok=True)
+    os.makedirs(os.path.join(dataset_dir, "images", "val"), exist_ok=True)
+    os.makedirs(os.path.join(dataset_dir, "labels", "train"), exist_ok=True)
+    os.makedirs(os.path.join(dataset_dir, "labels", "val"), exist_ok=True)
+    for img in img_list[:int(train_ratio*len(img_list))]:
+        os.system("mv "+os.path.join(dataset_dir, "images", img) + " " + os.path.join(dataset_dir, "images", "train"))
+        os.system("mv "+os.path.join(dataset_dir, "labels", img.replace(".jpg", '.txt')) + " " + os.path.join(dataset_dir, "labels", "train"))
+
+    for img in img_list[int(train_ratio*len(img_list)):]:
+        os.system("mv "+os.path.join(dataset_dir, "images", img) + " " + os.path.join(dataset_dir, "images", "val"))
+        os.system("mv "+os.path.join(dataset_dir, "labels", img.replace(".jpg", '.txt')) + " " + os.path.join(dataset_dir, "labels", "val"))
+
+
 if __name__ == '__main__':
-    classes = [str(int(i)) for i in range(10)]
-    input_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/num_recon/bof/test/xml/"
-    output_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/num_recon/bof/test/labels/"
-    image_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/num_recon/bof/test/image/"
-    convers_voc2yolo(input_dir, output_dir, image_dir, classes)
+    # nums_recon
+    # classes = [str(int(i)) for i in range(10)]
+    # nums qian gang 
+    classes = [str(int(i)) for i in range(10)] + list(string.ascii_uppercase)
+    input_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/label/"
+    output_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/labels/"
+    image_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/image/"
+    split("/vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/")
+    # convers_voc2yolo(input_dir, output_dir, image_dir, classes)
 
     
