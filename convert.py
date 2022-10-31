@@ -47,8 +47,8 @@ def convers_voc2yolo(input_dir, output_dir, image_dir, classes):
             label = obj.find("name").text
             # check for new classes and append to list
             if label not in classes:
-                # classes.append(label)
-                continue
+                classes.append(label)
+                # continue
             index = classes.index(label)
             pil_bbox = [int(x.text) for x in obj.find("bndbox")]
             yolo_bbox = xml_to_yolo_bbox(pil_bbox, width, height)
@@ -86,11 +86,11 @@ if __name__ == '__main__':
     # nums qian gang 
     # classes = [str(int(i)) for i in range(10)] + list(string.ascii_uppercase) + ["plate"]
     # helmet detection
-    classes = ["head", "helmet"]
-    input_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/HelmetDetection/annotations/"
-    output_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/HelmetDetection/labels/"
-    image_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/HelmetDetection/images/"
+    classes = ["crack","bar","round","lop","icf"]
+    input_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/hanfeng/annotations/"
+    output_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/hanfeng/labels/"
+    image_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/hanfeng/images/"
     convers_voc2yolo(input_dir, output_dir, image_dir, classes)
     # os.system('cp -r /vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/image/ /vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/images/')
     # os.system('cp -r /vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/labels/ /vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/labels/')
-    split("/vepfs/Perception/Users/jianfei/self_exp/detectiondata/HelmetDetection/")
+    split("/vepfs/Perception/Users/jianfei/self_exp/detectiondata/hanfeng/")
