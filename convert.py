@@ -31,7 +31,7 @@ def convers_voc2yolo(input_dir, output_dir, image_dir, classes):
         basename = os.path.basename(fil)
         filename = os.path.splitext(basename)[0]
         # check if the label contains the corresponding image file
-        if not os.path.exists(os.path.join(image_dir, f"{filename}.png")):
+        if not os.path.exists(os.path.join(image_dir, f"{filename}.jpg")):
             print(f"{filename} image does not exist!")
             continue
 
@@ -47,7 +47,9 @@ def convers_voc2yolo(input_dir, output_dir, image_dir, classes):
             label = obj.find("name").text
             # check for new classes and append to list
             if label not in classes:
-                classes.append(label)
+                # classes.append(label)
+                if label == "palte":
+                    label = "plate"
                 # continue
             index = classes.index(label)
             pil_bbox = [int(x.text) for x in obj.find("bndbox")]
@@ -65,7 +67,7 @@ def convers_voc2yolo(input_dir, output_dir, image_dir, classes):
     with open('classes.txt', 'w', encoding='utf8') as f:
         f.write(json.dumps(classes))
 
-def split(dataset_dir, train_ratio=0.85):
+def split(dataset_dir, train_ratio=0.9):
     img_list = os.listdir(os.path.join(dataset_dir, "images"))
     os.makedirs(os.path.join(dataset_dir, "images", "train"), exist_ok=True)
     os.makedirs(os.path.join(dataset_dir, "images", "val"), exist_ok=True)
@@ -73,24 +75,24 @@ def split(dataset_dir, train_ratio=0.85):
     os.makedirs(os.path.join(dataset_dir, "labels", "val"), exist_ok=True)
     for img in img_list[:int(train_ratio*len(img_list))]:
         os.system("mv "+os.path.join(dataset_dir, "images", img) + " " + os.path.join(dataset_dir, "images", "train"))
-        os.system("mv "+os.path.join(dataset_dir, "labels", img.replace(".png", '.txt')) + " " + os.path.join(dataset_dir, "labels", "train"))
+        os.system("mv "+os.path.join(dataset_dir, "labels", img.replace(".jpg", '.txt')) + " " + os.path.join(dataset_dir, "labels", "train"))
 
     for img in img_list[int(train_ratio*len(img_list)):]:
         os.system("mv "+os.path.join(dataset_dir, "images", img) + " " + os.path.join(dataset_dir, "images", "val"))
-        os.system("mv "+os.path.join(dataset_dir, "labels", img.replace(".png", '.txt')) + " " + os.path.join(dataset_dir, "labels", "val"))
+        os.system("mv "+os.path.join(dataset_dir, "labels", img.replace(".jpg", '.txt')) + " " + os.path.join(dataset_dir, "labels", "val"))
 
 
 if __name__ == '__main__':
     # nums_recon
     # classes = [str(int(i)) for i in range(10)]
     # nums qian gang 
-    # classes = [str(int(i)) for i in range(10)] + list(string.ascii_uppercase) + ["plate"]
+    classes = [str(int(i)) for i in range(10)] + list(string.ascii_uppercase) + ["plate"]
     # helmet detection
-    classes = ["crack","bar","round","lop","icf"]
-    input_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/hanfeng/annotations/"
-    output_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/hanfeng/labels/"
-    image_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/hanfeng/images/"
-    convers_voc2yolo(input_dir, output_dir, image_dir, classes)
+    # classes = ["crack","bar","round","lop","icf"]
+    # input_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang_aug/label/"
+    # output_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang_aug/labels/"
+    # image_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang_aug/image/"
+    # convers_voc2yolo(input_dir, output_dir, image_dir, classes)
     # os.system('cp -r /vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/image/ /vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/images/')
     # os.system('cp -r /vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/labels/ /vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/labels/')
-    split("/vepfs/Perception/Users/jianfei/self_exp/detectiondata/hanfeng/")
+    split("/vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/")
