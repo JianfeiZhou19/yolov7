@@ -47,10 +47,10 @@ def convers_voc2yolo(input_dir, output_dir, image_dir, classes):
             label = obj.find("name").text
             # check for new classes and append to list
             if label not in classes:
-                # classes.append(label)
-                if label == "palte":
-                    label = "plate"
-                # continue
+                print('label not in predefine classes, please check your annotations!')
+                print("annotation file: ", fil)
+                print("image file: ", os.path.join(image_dir, f"{filename}.jpg"))
+                import pdb;pdb.set_trace()
             index = classes.index(label)
             pil_bbox = [int(x.text) for x in obj.find("bndbox")]
             yolo_bbox = xml_to_yolo_bbox(pil_bbox, width, height)
@@ -67,7 +67,7 @@ def convers_voc2yolo(input_dir, output_dir, image_dir, classes):
     with open('classes.txt', 'w', encoding='utf8') as f:
         f.write(json.dumps(classes))
 
-def split(dataset_dir, train_ratio=0.9):
+def split(dataset_dir, train_ratio=0.85):
     img_list = os.listdir(os.path.join(dataset_dir, "images"))
     os.makedirs(os.path.join(dataset_dir, "images", "train"), exist_ok=True)
     os.makedirs(os.path.join(dataset_dir, "images", "val"), exist_ok=True)
@@ -89,10 +89,10 @@ if __name__ == '__main__':
     classes = [str(int(i)) for i in range(10)] + list(string.ascii_uppercase) + ["plate"]
     # helmet detection
     # classes = ["crack","bar","round","lop","icf"]
-    # input_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang_aug/label/"
-    # output_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang_aug/labels/"
-    # image_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang_aug/image/"
-    # convers_voc2yolo(input_dir, output_dir, image_dir, classes)
-    # os.system('cp -r /vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/image/ /vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/images/')
-    # os.system('cp -r /vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/labels/ /vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/labels/')
+    input_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/label/"
+    output_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/labels/"
+    image_dir = "/vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/image/"
+    convers_voc2yolo(input_dir, output_dir, image_dir, classes)
+    os.system('cp -r /vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/image/ /vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/images/')
+    os.system('cp -r /vepfs/Perception/Users/jianfei/self_exp/detectiondata/qiangang/labels/ /vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/labels/')
     split("/vepfs/Perception/Users/jianfei/self_exp/yolov7/dataset/qiangang/")
